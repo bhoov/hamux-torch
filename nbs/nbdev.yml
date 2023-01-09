@@ -1,0 +1,9 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "hamux-torch"
+  site-url: "https://bhoov.github.io/hamux-torch"
+  description: "A pytorch implementation of HAMUX, originally implemented in JAAX"
+  repo-branch: main
+  repo-url: "https://github.com/bhoov/hamux-torch"

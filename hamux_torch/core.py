@@ -1,4 +1,3 @@
-#%%
 __all__ = ["legendre_transform", "IdentityLagrangian", "NeuronLayer", "HAM", "VectorizedHAM"]
 
 import torch
@@ -8,7 +7,6 @@ from torch import Tensor
 from torch.func import vmap, grad, grad_and_value
 import numpy as np
 
-#%% Typing
 from jaxtyping import Float
 from typing import *
 from warnings import warn
@@ -17,7 +15,6 @@ StateTensor = Float[Tensor, "..."]
 ActivationTensor = Float[Tensor, "..."]
 Scalar = Float[Tensor, ""]
 
-#%% Lagrangians
 class LegendreTransform(torch.autograd.Function):
     # Enable automatic vmap rule generation for torch.func transforms
     generate_vmap_rule = True
@@ -46,7 +43,6 @@ def legendre_transform(F):
     
     return Fhat
 
-# For example
 class IdentityLagrangian(nn.Module):
     def __init__(self):
         super().__init__()
@@ -55,12 +51,7 @@ class IdentityLagrangian(nn.Module):
         """Gradient of this is identity function"""
         return 0.5 * (x**2).sum()
 
-# x = torch.randn(10)
-# g = x.clone()
-# Fhat = legendre_transform(IdentityLagrangian())
-# Fhat(x, g)
 
-#%% Neuron Layers
 class NeuronLayer(nn.Module):
     """Neuron layers represent dynamic variables that evolve during inference (i.e., memory retrieval/error correction)"""
     lagrangian: Callable # The scalar-valued Lagrangian function:  x -> R
@@ -95,24 +86,6 @@ class NeuronLayer(nn.Module):
         return f"NeuronLayer(shape={self.shape}, lagrangian={self.lagrangian.__repr__()})"
 
 
-# # Check nn.Module
-# shape = (10,)
-# layer = NeuronLayer(IdentityLagrangian(), shape)
-# x = layer.init()
-# g = layer.activations(x)
-# assert x.shape == shape
-# assert torch.allclose(g, x)
-
-# # Check callable
-# shape = (10,)
-# layer = NeuronLayer(lambda x: 0.5 * (x**2).sum(), shape)
-# x = layer.init()
-# g = layer.activations(x)
-# assert x.shape == shape
-# assert torch.allclose(g, x)
-
-
-#%% Simple synapses
 class LinearSynapse(nn.Module):
     """The energy synapse corrolary of the linear layer in standard neural networks"""
     def __init__(self, x1_dim: int, x2_dim: int):
@@ -122,8 +95,6 @@ class LinearSynapse(nn.Module):
     def forward(self, xhat1: ActivationTensor, xhat2: ActivationTensor) -> Scalar:
         return -torch.einsum("...c,...d,cd->...", xhat1, xhat2, self.W)
 
-
-# %%
 
 StateCollection = Dict[str, StateTensor]
 ActivationCollection = Dict[str, ActivationTensor]
@@ -203,7 +174,6 @@ class HAM(nn.Module):
     def unvectorize(self): return self
     def vectorize(self): return VectorizedHAM(self)
 
-#%% Vectorized HAM
 def _docstring_from(source_func):
     """Decorator that copies the docstring from source_func to the decorated function"""
     def decorator(target_func):

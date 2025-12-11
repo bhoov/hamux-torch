@@ -11,8 +11,16 @@ git clone git@github.com:bhoov/hamux-torch.git
 uv sync
 ```
 
-Then run `example_mnist.ipynb`. You may need to install the ipykernel for the env with 
+Then run `example_mnist.ipynb`. You may need to install the ipykernel for the env with
 
 ```sh
 uv run ipython kernel install --user --env VIRTUAL_ENV $(pwd)/.venv --name=hamux-torch
 ```
+
+## Testing
+
+```sh
+make test
+```
+
+Other test commands: `make test-quick`, `make test-cov`
